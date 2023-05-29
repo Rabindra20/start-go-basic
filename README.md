@@ -7,3 +7,7 @@ Run code
 ```
 go run .
 ```
+```
+go get github.com/gin-gonic/gin
+```
+go mod tidy

@@ -1,35 +1,41 @@
 package main
+import (
+	"fmt"
+	"log"
+	"net/http"
 
-import "fmt"
+)
+func formHandler(w http.ResponseWriter, r *http.request){
+	if err := r.ParseForm(); err !=nil {
+		fmt.Fprintf(w,"ParseForm() err: %v",err)
+		return
+	}
+	fmt.Fprintf(w, "Post request successful")
+	name :=r.FormValue("name")
+	address :=r.FormValue("address")
+	fmt.Fprintf(w,"Name= %s\n",name)
+	fmt.Fprintf(w,"Address=%s\n",address)
+}
+func helloHandler(w http.ResponseWriter,r *http.Request){
+	if r.URL.Path !="/hello"{
+		http.Error(w,"404 not found",http.StatusNotFound)
+		return
+}
+if r.method !="GET"{
+	http.Error(w,"meethod is not support",http.StatusNotFound)
+	return
+}
+fmt.Fprintf(w,"hello")
+}
 
 func main() {
-    fmt.Println("Hello, World!")
-	var userName = "rab"
-	// use printf and %v for placeholder
-	fmt.Printf("welcome %v\n", userName) 
-	// fmt.Scan(&userName)
-	// fmt.Printf("%v", userName)
+fileServer:= http.FileServer(http.Dir("./static"))
+http.Handle("/",fileServer)
+http.HandleFuc("/form", formHandler)
+http.HandleFuc("/hello", helloHandler)
 
-	// array
-	var students [3]string
-	fmt.Printf("students: %v \n",students)
-	students[0]="ram"
-	students[1]="syam"
-	students[2]="gita"
-	fmt.Printf("students: %v \n",students) //print all student
-	fmt.Printf("students #1: %v \n",students[1]) // define student
-
-
-	var identityMatrix [3][3]int = [3][3]int{ [3]int {1, 0, 0}, [3]int {0, 1, 0}, [3]int{0, 0, 1} }
-	fmt.Println(identityMatrix)
-
-	
-	// array
-	a := [...]int {1,2,3}
-	b := &a //put a instat of &a
-    b[1] = 5
-	fmt.Println(a)
-	fmt.Println(b)
-
-	fmt.Printf("Length: %v\n",len(a))
+fmt.Printf("starting sever at port 8080\n")
+if err:= http.ListenAndServe(":8080",nil);err !=nil{
+	log.Fatal(err)
+}
 } 
